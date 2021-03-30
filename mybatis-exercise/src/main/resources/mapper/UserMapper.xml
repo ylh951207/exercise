@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yang.mapper.UserMapper">
+
+    <!--批量添加-->
+    <insert id="batchSaveUser">
+        INSERT INTO t_user (username,address,password)
+        VALUES 
+        <foreach collection="userList" item="user" separator=",">
+            (#{user.userName},#{user.passWord},#{user.address})
+        </foreach>
+    </insert>
+
+    <!--左联接查询-->
+    <select id="find" parameterType="int" resultType="user">
+         SELECT
+            tu.id,
+            username,
+            address,
+            PASSWORD,
+            countryid AS 'country.id',
+            tc.countname AS 'country.countname'
+        FROM
+            t_user AS tu
+        LEFT JOIN t_country AS tc ON tu.countryid = tc.id
+        WHERE
+            tu.id = #{id}
+    </select>
+    <!-- 根据id查询user对象-->
+    <select id="findById" parameterType="int" resultType="user">
+        SELECT * FROM t_user WHERE id=#{id}
+    </select>
+    <!--查询全部-->
+    <select id="findAll" resultType="user">
+        SELECT * FROM t_user
+    </select>
+    <!--增加对象-->
+    <insert id="add" parameterType="user">
+        INSERT INTO t_user (username,address,password,countryid) VALUES (#{userName},#{address},#{passWord},#{countryId})
+    </insert>
+    <!--修改-->
+    <update id="update" parameterType="user">
+        UPDATE t_user SET username = #{userName},address = #{address},password = #{passWord},countryid = #{countryId}
+        WHERE id = #{id}
+    </update>
+    <!--删除-->
+    <delete id="delete" parameterType="int">
+        DELETE FROM t_user WHERE id = #{id}
+    </delete>
+    <select id="page" resultType="user">
+        SELECT * FROM t_user limit #{offset},#{size}
+    </select>
+
+    <resultMap id="userWithTagMap" type="com.yang.entity.User">
+        <id column="id" property="id"/>
+        <result column="username" property="userName"/>
+        <result column="address" property="address"/>
+        <result column="password" property="passWord"/>
+        <result column="countryid" property="countryId"/>
+        <collection property="tagList" ofType="com.yang.entity.Tag">
+            <id column="tag_id" property="id"/>
+            <result column="tag_name" property="tagName"/>
+        </collection>
+    </resultMap>
+
+    <select id="findByIdWithTag" parameterType="int" resultMap="userWithTagMap">
+        SELECT
+            t_user.id,
+            username,
+            address,
+            PASSWORD,
+            countryid,
+            t_tag.id AS 'tag_id',
+            tag_name
+        FROM
+            t_user
+        INNER JOIN user_tag ON t_user.id = user_tag.user_id
+        INNER JOIN t_tag ON t_tag.id = user_tag.tag_id
+        WHERE
+            t_user.id = #{userId}
+    </select>
+
+
+</mapper>

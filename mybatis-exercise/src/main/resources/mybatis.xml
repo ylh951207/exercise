@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!-- 将数据库下划线命名映射为java中的驼峰命名-->
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+    <!--配置别名-->
+    <typeAliases>
+        <package name="com.yang.entity"/>
+    </typeAliases>
+
+    <!--配置数据库环境-->
+    <environments default="dev">
+        <environment id="dev">
+            <transactionManager type="JDBC"></transactionManager>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql:///mybatis"/>
+                <property name="username" value="root"/>
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--配置mapper文件 告诉mybatis去哪里找到SQL映射语句 使用相对于类路径的资源引用，
+    或完全限定资源定位符（包括 file:/// 形式的 URL），
+    或类名和包名等。-->
+
+    <!-- 使用相对于类路径的资源引用
+    <mappers>
+        <mapper resource="org/mybatis/builder/AuthorMapper.xml"/>
+    </mappers>
+    -->
+
+    <!-- 使用完全限定资源定位符（URL）
+    <mappers>
+        <mapper url="file:///src/resources/mappers/AuthorMapper.xml"/>
+    </mappers>
+    -->
+
+    <!-- 使用映射器接口实现类的完全限定类名
+    <mappers>
+        <mapper class="org.mybatis.builder.AuthorMapper"/>
+    </mappers>
+    -->
+
+    <!-- 将包内的映射器接口实现全部注册为映射器
+    <mappers>
+        <package name="org.mybatis.builder"/>
+    </mappers>
+    -->
+
+    <mappers>
+        <!--classpath中的路径-->
+        <mapper resource="mapper/UserMapper.xml"/>
+        <mapper resource="mapper/CountryMapper.xml"/>
+        <mapper resource="mapper/MovieMapper.xml"/>
+    </mappers>
+
+</configuration>
